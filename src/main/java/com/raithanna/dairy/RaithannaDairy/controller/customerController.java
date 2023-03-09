@@ -1,5 +1,4 @@
 package com.raithanna.dairy.RaithannaDairy.controller;
-
 import com.raithanna.dairy.RaithannaDairy.models.customer;
 import com.raithanna.dairy.RaithannaDairy.repositories.CustomerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,19 +15,16 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 @Controller
 public class customerController {
     @Autowired
     private CustomerRepository customerRepository;
-
     @GetMapping("/customers/new")
     public String createCustomerForm(Model model) {
         customer cm = new customer();
         model.addAttribute("Custome", cm);
         return "Custome";
     }
-
     @PostMapping("/customers")
     public String saveCustomer(Model model, customer Customer) {
         customer custWithMaxCustno = customerRepository.findTopByOrderByCustnoDesc();
@@ -44,19 +40,14 @@ public class customerController {
         customerRepository.save(Customer);
         return "redirect:/";
     }
-
-
-
     @RequestMapping("/customerEdit")
     public String createOrder_html(Model model, HttpSession session){
         if (session.getAttribute("loggedIn").equals("yes")){
-            Iterable<customer> CustomersIterable = customerRepository.findAll();
+            Iterable<customer> CustomersIterable = customerRepository.findByOrderByIdDesc();
             List<customer> Customers = new ArrayList<>();
             for (customer Customer : CustomersIterable) {
                 Customers.add(Customer);
             }
-
-
             model.addAttribute("customers", Customers);
             return "customerEdit";
         }
@@ -65,7 +56,6 @@ public class customerController {
         model.addAttribute("messages", messages);
         return "redirect:/login";
     }
-
     //getcustvalue i.e name,phonenumber,email
     @PostMapping("/getCustValues")
     public ResponseEntity<?> getCustValues(@RequestParam Map<String,String> body){
